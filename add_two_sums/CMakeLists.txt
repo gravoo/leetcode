@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+project(AddTwoSums)
+add_executable(add_two_sums main.cpp)
+target_include_directories(add_two_sums PRIVATE ${CMAKE_SOURCE_DIR})
+add_executable(test_add_two_sums_test two_sums_test.cpp)
+target_include_directories(test_add_two_sums_test PRIVATE ${CMAKE_SOURCE_DIR})
