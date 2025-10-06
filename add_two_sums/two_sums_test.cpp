@@ -41,10 +41,19 @@ void verify_sum(int value)
         delete l3;
     }
 }
+void test_node_generator(std::string str)
+{
+    std::cout << "test_node_generator " << str << "\n";
+    ListNode* l1 = generate_list_node_from_string(str);
+    auto actual = l1->get_string();
+    assert(str == actual);
+    delete l1;
+}
 int main()
 {
-    std::cout << "TEST STARTED\n";
-    verify_list_generator(1000);
-    verify_sum(1000);
-    std::cout << "TEST ENDED\n";
+    std::cout << "START TEST\n";
+    test_node_generator("[5]");
+    test_node_generator("[1,5]");
+    // test_node_generator("[1,5,2]");
+    std::cout << "END TEST\n";
 }

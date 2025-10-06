@@ -67,6 +67,37 @@ ListNode* generate_list_node(std::uint64_t number)
     }
     return head;
 }
+
+ListNode* generate_list_node_from_string(std::string number)
+{
+    ListNode* head = nullptr;
+    if (number.size() == 3)
+    {
+        head = new ListNode(number[1] - '0');
+    }
+    else
+    {
+        ListNode* tmp = nullptr;
+        for (auto i : number)
+        {
+            if (std::isdigit(i))
+            {
+                if (head == nullptr)
+                {
+                    head = new ListNode(i - '0');
+                    tmp = head;
+                }
+                else
+                {
+                    tmp->next = new ListNode(i - '0');
+                    tmp = tmp->next;
+                }
+            }
+        }
+    }
+    return head;
+}
+
 std::uint64_t get_number_from_nodes(ListNode* node)
 {
     std::uint64_t number = 0;
