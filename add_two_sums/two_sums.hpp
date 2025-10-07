@@ -15,111 +15,89 @@ struct ListNode
             delete next;
         }
     }
-    void print_me()
-    {
-        auto tmp = this;
-        while (tmp != nullptr)
-        {
-            std::cout << "[" << tmp->val << "]";
-            tmp = tmp->next;
-        }
-        std::cout << std::endl;
-    }
     std::string get_string()
     {
         auto tmp = this;
         std::string result;
+        if (tmp != nullptr)
+        {
+            result += std::string("[");
+        }
         while (tmp != nullptr)
         {
-            result += std::string("[") + std::to_string(tmp->val) + std::string("]");
+            result += std::to_string(tmp->val);
             tmp = tmp->next;
+            if (tmp != nullptr)
+            {
+                result += std::string(",");
+            }
+        }
+        if (!result.empty())
+        {
+            result += std::string("]");
         }
         return result;
     }
 };
 
-ListNode* generate_list_node(std::uint64_t number)
-{
-    ListNode* head = nullptr;
-    if (number == 0)
-    {
-        head = new ListNode(0);
-    }
-    else
-    {
-        ListNode* tmp = nullptr;
-        auto divisor = 10;
-        while (number > 0)
-        {
-            auto digit = number % divisor;
-            number /= divisor;
-            if (head == nullptr)
-            {
-                head = new ListNode(digit);
-                tmp = head;
-            }
-            else
-            {
-                tmp->next = new ListNode(digit);
-                tmp = tmp->next;
-            }
-        }
-    }
-    return head;
-}
-
-ListNode* generate_list_node_from_string(std::string number)
-{
-    ListNode* head = nullptr;
-    if (number.size() == 3)
-    {
-        head = new ListNode(number[1] - '0');
-    }
-    else
-    {
-        ListNode* tmp = nullptr;
-        for (auto i : number)
-        {
-            if (std::isdigit(i))
-            {
-                if (head == nullptr)
-                {
-                    head = new ListNode(i - '0');
-                    tmp = head;
-                }
-                else
-                {
-                    tmp->next = new ListNode(i - '0');
-                    tmp = tmp->next;
-                }
-            }
-        }
-    }
-    return head;
-}
-
-std::uint64_t get_number_from_nodes(ListNode* node)
-{
-    std::uint64_t number = 0;
-    std::uint64_t multiplier = 1;
-    while (node != nullptr)
-    {
-        number += node->val * multiplier;
-        node = node->next;
-        multiplier *= 10;
-    }
-    return number;
-}
-
 class Solution
 {
    private:
-   public:
-    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2)
+    int add_with_carry(int a, int b)
     {
-        auto num_1 = get_number_from_nodes(l1);
-        auto num_2 = get_number_from_nodes(l2);
-        auto num_result = num_1 + num_2;
-        return generate_list_node(num_result);
+        if (a + b >= 10)
+        {
+            return (a + b) % 10;
+        }
+        return a + b;
     }
+    bool set_carry_flag(int a, int b)
+    {
+        if (a + b >= 10)
+        {
+            return true;
+        }
+        return false;
+    }
+    ListNode* add(ListNode* l1, ListNode* l2)
+    {
+        auto sum = 0;
+        sum = add_with_carry(sum, l1->val);
+        auto carry_flag = set_carry_flag(sum, l2->val);
+        sum = add_with_carry(sum, l2->val);
+        auto sum_list_head = new ListNode(sum);
+        ListNode* sum_list_ptr = sum_list_head;
+
+        if (l1->next == nullptr && l2->next == nullptr && carry_flag)
+        {
+            sum_list_ptr->next = new ListNode(1);
+            sum_list_ptr = sum_list_ptr->next;
+        }
+        while (l1->next != nullptr || l2->next != nullptr)
+        {
+            auto has_next = false;
+            auto sum = 0;
+            if (l1->next != nullptr)
+            {
+                l1 = l1->next;
+                sum = add_with_carry(sum, l1->val);
+                has_next = true;
+            }
+            if (l2->next != nullptr)
+            {
+                l2 = l2->next;
+                sum = add_with_carry(sum, l2->val);
+                has_next = true;
+            }
+            if (has_next)
+            {
+                sum_list_ptr->next = new ListNode(sum);
+                sum_list_ptr = sum_list_ptr->next;
+            }
+        }
+        return sum_list_head;
+    }
+
+   public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) { return add(l1, l2); }
 };

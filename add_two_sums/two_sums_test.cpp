@@ -3,57 +3,86 @@
 #include <cstdint>
 #include <two_sums.hpp>
 
-void verify_single_list_generator(std::uint64_t value)
+ListNode* generate_list_node_from_string(std::string number)
 {
-    std::cout << "TEST verify_single_list_generator\n";
-    ListNode* l1 = generate_list_node(value);
-    auto actual = get_number_from_nodes(l1);
-    assert(actual == value);
-    delete l1;
-}
-void verify_list_generator(int value)
-{
-    std::cout << "TEST verify_list_generator\n";
-    ListNode* l1;
-    for (int i = 0; i < value; i++)
+    ListNode* head = nullptr;
+    if (number.size() < 3)
     {
-        l1 = generate_list_node(i);
-        auto actual = get_number_from_nodes(l1);
-        assert(actual == i);
-        delete l1;
+        head = new ListNode();
     }
-}
-void verify_sum(int value)
-{
-    std::cout << "TEST verify_sum\n";
-    Solution sol;
-    for (int i = 0; i < value; i++)
+    else
     {
-        auto l1_int = i;
-        auto l2_int = i;
-        ListNode* l1 = generate_list_node(l1_int);
-        ListNode* l2 = generate_list_node(l2_int);
-        ListNode* l3 = sol.addTwoNumbers(l1, l2);
-        auto actual = get_number_from_nodes(l3);
-        assert(actual == l1_int + l2_int);
-        delete l1;
-        delete l2;
-        delete l3;
+        ListNode* tmp = nullptr;
+        for (auto i : number)
+        {
+            if (std::isdigit(i))
+            {
+                if (head == nullptr)
+                {
+                    head = new ListNode(i - '0');
+                    tmp = head;
+                }
+                else
+                {
+                    tmp->next = new ListNode(i - '0');
+                    tmp = tmp->next;
+                }
+            }
+        }
     }
+    return head;
 }
 void test_node_generator(std::string str)
 {
-    std::cout << "test_node_generator " << str << "\n";
     ListNode* l1 = generate_list_node_from_string(str);
     auto actual = l1->get_string();
+    std::cout << "Expected: " << str << " actual: " << actual << std::endl;
     assert(str == actual);
     delete l1;
+}
+void add_two_strings(std::string s1, std::string s2, std::string expected)
+{
+    ListNode* l1 = generate_list_node_from_string(s1);
+    ListNode* l2 = generate_list_node_from_string(s2);
+    Solution adder;
+    auto l3 = adder.addTwoNumbers(l1, l2);
+    auto actual = l3->get_string();
+    std::cout << "Expected: " << expected << " actual: " << actual << std::endl;
+    assert(expected == actual);
+    delete l3;
+    delete l2;
+    delete l1;
+}
+void add_two_one_element_strings(std::string s1, std::string s2, std::string expected)
+{
+    add_two_strings(s1, s2, expected);
+}
+void add_two_strings_with_no_carry(std::string s1, std::string s2, std::string expected)
+{
+    add_two_strings(s1, s2, expected);
+}
+void add_two_strings_with_carry(std::string s1, std::string s2, std::string expected)
+{
+    add_two_strings(s1, s2, expected);
 }
 int main()
 {
     std::cout << "START TEST\n";
+    test_node_generator("[0]");
     test_node_generator("[5]");
     test_node_generator("[1,5]");
-    // test_node_generator("[1,5,2]");
+    test_node_generator("[1,5,2]");
+    add_two_one_element_strings("[1]", "[1]", "[2]");
+    add_two_one_element_strings("[3]", "[4]", "[7]");
+    add_two_one_element_strings("[3]", "[4]", "[7]");
+    add_two_strings_with_no_carry("[0, 1]", "[4]", "[4,1]");
+    add_two_strings_with_no_carry("[1]", "[4,1]", "[5,1]");
+    add_two_strings_with_no_carry("[0,1,1]", "[0,1,1]", "[0,2,2]");
+    add_two_strings_with_no_carry("[0,1,1,1]", "[0,1,1,1]", "[0,2,2,2]");
+    add_two_strings_with_no_carry("[0,1,1,1,1]", "[0,1,1,1,1]", "[0,2,2,2,2]");
+    add_two_strings_with_no_carry("[0,1,1,1,1]", "[0,1,1]", "[0,2,2,1,1]");
+    add_two_strings_with_carry("[9]", "[1]", "[0,1]");
+    add_two_strings_with_carry("[9]", "[9]", "[8,1]");
+    add_two_strings_with_carry("[1,1]", "[9]", "[0,2]");
     std::cout << "END TEST\n";
 }
