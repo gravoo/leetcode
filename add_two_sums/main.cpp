@@ -1,15 +1,8 @@
 
-#include <two_sums.hpp>
-
+#include <iostream>
+#include <utils.hpp>
 int main()
 {
-    // Solution sol;
-    // ListNode* l1 = generate_list_node(100);
-    // ListNode* l2 = generate_list_node(100);
-    // ListNode* l3 = sol.addTwoNumbers(l1, l2);
-    // l3->print_me();
-    // delete l3;
-    // delete l2;
-    // delete l1;
-    // return 0;
+    std::cout << "Two strings in reverse order to add\n";
+    std::cout << add_two_strings("[0,0,0,1]", "[0,0,0,1,1]") << std::endl;
 }
